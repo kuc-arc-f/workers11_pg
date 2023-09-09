@@ -4,9 +4,9 @@
 
  Author  : Kouji Nakashima / kuc-arc-f.com
 
- date    : 2023/09/09
+ date    : 2023/09/08
 
- update  :
+ update  : 2023/09/09
 
 ***
 ### Summary
@@ -14,7 +14,7 @@
 cloudflare workers + postgres,  sample
 
 ***
-### setting
+### wrangler.toml, setting
 
 * db setting, sample
 ```
