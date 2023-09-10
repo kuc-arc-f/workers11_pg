@@ -6,39 +6,25 @@ const router = {
      *
      * @return
      */
-    create: async function (req: any, res: any, env: any): Promise<Response>
+    create: async function (client: any, req: any, res: any, env: any): Promise<Response>
     {
     console.log(req);
         const retObj = {ret: "NG", data: [], message: ''}
         try{
-        if (req) {
-            const sql = `
-            INSERT INTO todos ( title, content, completed, userId)
-            VALUES('${req.title}', '${req.content}', 0,  ${req.userId});
-            `;
-    //console.log(sql);
-            const resulte = await env.DB.prepare(sql).run();
-    //console.log(resulte);
-            if(resulte.success !== true) {
-            console.error("Error, /create");
-            throw new Error('Error , create');
-            }
-            //id
-            const sql_id = "SELECT last_insert_rowid() AS id;";
-            const resultId = await env.DB.prepare(sql_id).all();
-    //console.log(resultId);
-            if(resultId.results.length < 1) {
-            console.error("Error, resultId.length < 1");
-            throw new Error('Error , create, SELECT last_insert_rowid');
-            }
-            const item_id = resultId.results[0].id;
-    console.log("item_id=", item_id);
-            req.id = item_id;
-        }            
-        return Response.json({ret: "OK", data: req});
+            let result = {};
+            if (req) {
+                const text = `
+                INSERT INTO public."Task" (title, content, "userId", "createdAt", "updatedAt") 
+                VALUES($1, $2, 0, current_timestamp, current_timestamp) RETURNING *
+                `;      
+                const values = [req.title, req.content ]
+                const res = await client.query(text, values);
+                result = res.rows[0];
+            }            
+            return Response.json({ret: "OK", data: result});
         } catch (e) {
-        console.error(e);
-        return Response.json(retObj);
+            console.error(e);
+            return Response.json(retObj);
         } 
     }, 
     /**
@@ -47,27 +33,22 @@ const router = {
      *
      * @return
      */ 
-    delete: async function (req: any, res: any, env: any): Promise<Response>
+    delete: async function (client: any, req: any, res: any, env: any): Promise<Response>
     {
     console.log(req);
         const retObj = {ret: "NG", data: [], message: ''}
         try{
-        if (req) {
-            const sql = `
-            DELETE FROM todos WHERE id = ${req.id}
-            `;
-    console.log(sql);
-            const resulte = await env.DB.prepare(sql).run();
-    //console.log(resulte);
-            if(resulte.success !== true) {
-            console.error("Error, delete");
-            throw new Error('Error , delete');
-            }      
-        }
-        return Response.json({ret: "OK", data: req});
+            if (req) {
+                const text = `
+                DELETE FROM public."Task" WHERE id = ${req.id}
+                `;
+console.log(text);
+                const res = await client.query(text);
+            }
+            return Response.json({ret: "OK", data: req});
         } catch (e) {
-        console.error(e);
-        return Response.json(retObj);
+            console.error(e);
+            return Response.json(retObj);
         } 
     },
     /**
@@ -76,7 +57,7 @@ const router = {
      *
      * @return
      */ 
-    update: async function (req: any, res: any, env: any): Promise<Response>
+    update: async function (client: any, req: any, res: any, env: any): Promise<Response>
     {
     //    console.log("#test.update");
     console.log(req);
@@ -139,29 +120,24 @@ console.log(result.rows.length)
      *
      * @return
      */ 
-    get_list: async function (req: any, res: any, env: any): Promise<Response>
+    get_list: async function (client: any, req: any, res: any, env: any): Promise<Response>
     {
     //console.log(req);
-        let resulte: any = [];
+        let result: any = [];
         const retObj = {ret: "NG", data: [], message: ''}
         try{
-        let result: any = {};  
-        if (req) {
-
-            const sql = `
-            SELECT * FROM todos
-            WHERE userId = ${req.userId}
-            ORDER BY id DESC
-            `;  
-    //console.log(sql);
-            resulte = await env.DB.prepare(sql).all();
-            //console.log(resulte);
-            if(resulte.length < 1) {
-            console.error("Error, results.length < 1");
-            throw new Error('Error , get');
-            }              
-        }           
-        return Response.json({ret: "OK", data: resulte.results});
+            if (req) {
+                const text = `
+                SELECT * FROM public."Task" ORDER BY id DESC LIMIT 100
+                `;
+                result = await client.query(text);            
+                //console.log(resulte);
+                if(result.rows.length< 1) {
+                    console.error("Error, results.length < 1");
+                    throw new Error('Error , get');
+                }              
+            }           
+            return Response.json({ret: "OK", data: result.rows});
         } catch (e) {
         console.error(e);
         return Response.json(retObj);
@@ -173,7 +149,7 @@ console.log(result.rows.length)
      *
      * @return
      */ 
-    search: async function (req: any, res: any, env: any): Promise<Response>
+    search: async function (client: any, req: any, res: any, env: any): Promise<Response>
     {
     console.log(req);
         let resulte: any = [];
