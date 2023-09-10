@@ -9,6 +9,7 @@ node_compat = true
 # MY_VARIABLE = "production_value"
 
 [vars]
+API_KEY = "123"
 DB_NAME = ""
 DB_USERNAME = "postgres"
 DB_HOST = ""

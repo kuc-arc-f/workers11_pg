@@ -6,7 +6,7 @@
 
  date    : 2023/09/08
 
- update  : 2023/09/09
+ update  : 2023/09/10
 
 ***
 ### Summary
@@ -18,7 +18,7 @@ cloudflare workers + postgres,  sample
 
 * db setting, sample
 ```
-name = "kuc-workers11pg"
+name = "name123"
 main = "src/index.ts"
 compatibility_date = "2023-09-04"
 node_compat = true
@@ -29,6 +29,7 @@ node_compat = true
 # MY_VARIABLE = "production_value"
 
 [vars]
+API_KEY = "123"
 DB_NAME = ""
 DB_USERNAME = "postgres"
 DB_HOST = "hoge123.db.com"
