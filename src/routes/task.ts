@@ -63,24 +63,25 @@ console.log(text);
     console.log(req);
         const retObj = {ret: "NG", data: [], message: ''}
         try{
-        if (req) {
-            const sql = `
-            UPDATE todos 
-            SET title = '${req.title}', content='${req.content}',
-            completed = '${req.completed}'
-            WHERE id = ${req.id}
-            `;
-            console.log(sql);
-            const resulte = await env.DB.prepare(sql).run();
-            if(resulte.success !== true) {
-            console.error("Error, update");
-            throw new Error('Error , update');
-            }           
-        }                
-        return Response.json({ret: "OK", data: req});
+            if (req) {
+                let result = {};
+                const text = `
+                UPDATE  public."Task" 
+                SET title = $1, content=$2
+                WHERE id =$3
+                RETURNING *
+                `;
+                const values = [req.title, req.content, req.id ];
+console.log(text);
+                const res = await client.query(text, values);
+                result = res.rows[0];
+console.log(result);
+            }                
+            return Response.json({ret: "OK", data: req});
         } catch (e) {
-        console.error(e);
-        return Response.json(retObj);
+            //client.end();
+            console.error(e);
+            return Response.json(retObj);
         } 
     },
     /**
