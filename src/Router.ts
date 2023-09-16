@@ -1,8 +1,8 @@
 //import testRouter from './routes/test';
 import taskRouter from './routes/task';
+import userRouter from './routes/user';
 /*
 import todoRouter from './routes/todo';
-import userRouter from './routes/user';
 import sessionRouter from './routes/session';
 import repoNameRouter from './routes/RepoName';
 import repoCountRouter from './routes/RepoCount';
@@ -40,14 +40,12 @@ const Router = {
       response = await taskRouter.get_list(client, req, res, env);  
     }
     //user
-    /*
     if (pathname === "/users/create") {
-      response = await userRouter.create(req, res, env);  
+      response = await userRouter.create(client, req, res, env);  
     }
     if (pathname === "/users/get") {
-      response = await userRouter.get(req, res, env);  
+      response = await userRouter.get(client, req, res, env);  
     }    
-    */
     //@ts-ignore
     return response;
   },

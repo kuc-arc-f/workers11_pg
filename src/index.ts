@@ -1,4 +1,4 @@
-import { Client } from "pg";
+//import { Client } from "pg";
 import Router from './Router';
 import Common from './lib/Common';
 import DbCommon from './lib/DbCommon';
@@ -30,14 +30,14 @@ export default {
                 return Response.json(errorObj);
             } 
 console.log(reqObj);
-			const contentType = request.headers.get("content-type");
-			if(contentType !== "application/json") {
-				console.log("contentType=", contentType);
-				return Response.json({ret: "NG", messase: "Error, contentType <> application/json"});
-			}	
+            const contentType = request.headers.get("content-type");
+            if(contentType !== "application/json") {
+                console.log("contentType=", contentType);
+                return Response.json({ret: "NG", messase: "Error, contentType <> application/json"});
+            }	
 console.log("pathname=", pathname);
-			//Router
-			const res = await Router.route(pathname, client, reqObj, Response, env);
+            //Router
+            const res = await Router.route(pathname, client, reqObj, Response, env);
             ctx.waitUntil(client.end());            
             return res;     
         }
